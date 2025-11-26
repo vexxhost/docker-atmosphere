@@ -1,0 +1,29 @@
+name: Checkout and patch source
+description: Checkout a Git repository and auto-apply patches from patches/<repository>/
+
+inputs:
+  repository:
+    description: 'Repository name with owner. For example, actions/checkout'
+    required: true
+  ref:
+    description: >
+      The branch, tag or SHA to checkout. When checking out the repository that
+      triggered a workflow, this defaults to the reference or SHA for that
+      event. Otherwise, uses the default branch.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout source
+      uses: actions/checkout@v6
+      with:
+        repository: ${{ inputs.repository }}
+        ref: ${{ inputs.ref }}
+        path: ${{ inputs.repository }}
+        fetch-depth: 0
+
+    - name: Apply patches
+      if: hashFiles(format('patches/{0}/*.patch', inputs.repository)) != ''
+      shell: bash
+      run: git -C "${{ inputs.repository }}" apply --verbose patches/${{ inputs.repository }}/*
