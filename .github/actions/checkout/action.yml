@@ -15,15 +15,13 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Checkout source
-      uses: actions/checkout@v6
+    - uses: actions/checkout@v6
       with:
         repository: ${{ inputs.repository }}
         ref: ${{ inputs.ref }}
         path: ${{ inputs.repository }}
         fetch-depth: 0
 
-    - name: Apply patches
+    - shell: bash
       if: hashFiles(format('patches/{0}/*.patch', inputs.repository)) != ''
-      shell: bash
       run: git -C "${{ inputs.repository }}" apply --verbose patches/${{ inputs.repository }}/*
