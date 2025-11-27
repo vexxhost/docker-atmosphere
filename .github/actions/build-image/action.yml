@@ -36,7 +36,7 @@ runs:
         images: ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}
         tags: |
           type=sha,prefix=
-          type=match,pattern=stable/(.*),group=1
+          type=match,pattern=stable/(.*),group=1,value={{branch}}
           type=ref,event=pr
 
     - uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
