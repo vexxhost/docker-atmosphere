@@ -1,5 +1,15 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["local>vexxhost/.github", "docker:pinDigests"],
-  "baseBranches": ["$default", "/^stable/.*/"]
+  "baseBranches": ["$default", "/^stable/.*/"],
+  "packageRules": [
+    {
+      "description": "Only allow digest updates for vexxhost images on stable branches",
+      "matchBaseBranches": ["/^stable/.*/"],
+      "matchDatasources": ["docker"],
+      "matchPackagePatterns": ["^ghcr\\.io/vexxhost/"],
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "enabled": false
+    }
+  ]
 }
