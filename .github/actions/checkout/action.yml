@@ -26,4 +26,4 @@ runs:
 
     - shell: bash
       if: hashFiles(format('patches/{0}/*.patch', inputs.repository)) != ''
-      run: git -C "${{ inputs.repository }}" apply --verbose patches/${{ inputs.repository }}/*
+      run: git -C "${{ inputs.repository }}" apply --verbose "${{ github.workspace }}"/patches/${{ inputs.repository }}/*
