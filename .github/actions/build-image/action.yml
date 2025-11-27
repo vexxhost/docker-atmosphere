@@ -35,6 +35,7 @@ runs:
       with:
         images: ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}
         tags: |
+          type=raw,value=latest,enable={{is_default_branch}}
           type=sha,prefix=
           type=match,pattern=stable/(.*),group=1,value={{branch}}
           type=ref,event=pr
