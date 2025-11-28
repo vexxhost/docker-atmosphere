@@ -5,6 +5,9 @@ inputs:
   image-name:
     description: 'Name of the image (e.g., nova, keystone)'
     required: true
+  build-args:
+    description: 'List of build-time variables'
+    required: false
   build-contexts:
     description: 'List of additional build contexts (e.g., name=path)'
     required: false
@@ -42,6 +45,7 @@ runs:
     - uses: depot/build-push-action@v1
       with:
         project: xcdwcljcld
+        build-args: ${{ inputs.build-args }}
         build-contexts: ${{ inputs.build-contexts }}
         platforms: ${{ inputs.platforms }}
         push: ${{ inputs.push }}
