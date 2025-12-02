@@ -77,8 +77,8 @@ runs:
         message: |-
           This pull request has been included in the following image tags:
 
-          \`\`\`
+          ```
           ${{ steps.meta.outputs.tags }}
-          \`\`\`
+          ```
 
-          **Digest:** \`ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}@${{ steps.build.outputs.digest }}\`
+          **Digest:** `ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}@${{ steps.build.outputs.digest }}`
