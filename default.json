@@ -10,6 +10,12 @@
       "matchPackagePatterns": ["^ghcr\\.io/vexxhost/"],
       "matchUpdateTypes": ["major", "minor", "patch"],
       "enabled": false
+    },
+    {
+      "description": "Group all vexxhost image updates into a single PR",
+      "matchDatasources": ["docker"],
+      "matchPackagePatterns": ["^ghcr\\.io/vexxhost/"],
+      "groupName": "vexxhost images"
     }
   ]
 }
