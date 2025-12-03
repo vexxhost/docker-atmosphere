@@ -15,7 +15,8 @@
       "description": "Group all vexxhost image updates into a single PR",
       "matchDatasources": ["docker"],
       "matchPackagePatterns": ["^ghcr\\.io/vexxhost/"],
-      "groupName": "vexxhost images"
+      "groupName": "vexxhost images",
+      "automerge": true
     }
   ]
 }
