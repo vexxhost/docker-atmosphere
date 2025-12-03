@@ -2,6 +2,18 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["local>vexxhost/.github", "docker:pinDigests"],
   "baseBranches": ["$default", "/^stable/.*/"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update git refs in GitHub Actions workflows",
+      "fileMatch": ["^\\.github/workflows/[^/]+\\.ya?ml$"],
+      "matchStrings": [
+        "repository:\\s*(?<depName>[^\\s]+)\\s+ref:\\s*(?<currentDigest>[a-f0-9]{40})\\s*#\\s*(?<currentValue>\\S+)"
+      ],
+      "datasourceTemplate": "git-refs",
+      "packageNameTemplate": "https://github.com/{{depName}}"
+    }
+  ],
   "packageRules": [
     {
       "description": "Only allow digest updates for vexxhost images on stable branches",
@@ -16,6 +28,12 @@
       "matchDatasources": ["docker"],
       "matchPackagePatterns": ["^ghcr\\.io/vexxhost/"],
       "groupName": "vexxhost images",
+      "automerge": true
+    },
+    {
+      "description": "Group all git-refs updates into a single PR",
+      "matchDatasources": ["git-refs"],
+      "groupName": "git refs",
       "automerge": true
     }
   ]
