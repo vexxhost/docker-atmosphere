@@ -70,7 +70,7 @@ runs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
 
-    - uses: ubie-oss/comment-to-merged-pr-action@v0.4.0
+    - uses: ubie-oss/comment-to-merged-pr-action@947981079c7889504e28088fb38649bc5218e28d # v0.4.0
       if: inputs.push == 'true'
       with:
         github-token: ${{ github.token }}
