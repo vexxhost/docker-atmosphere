@@ -14,6 +14,15 @@
       ],
       "datasourceTemplate": "git-refs",
       "packageNameTemplate": "https://github.com/{{depName}}"
+    },
+    {
+      "customType": "regex",
+      "description": "Update pinned PyPI packages in Dockerfiles",
+      "fileMatch": ["(^|/)Dockerfile$"],
+      "matchStrings": [
+        "(?<depName>[a-zA-Z0-9][a-zA-Z0-9._-]*)==(?<currentValue>[0-9][^\\s\\\\]*)"
+      ],
+      "datasourceTemplate": "pypi"
     }
   ],
   "packageRules": [
