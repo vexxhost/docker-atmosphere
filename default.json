@@ -46,6 +46,12 @@
       "matchDatasources": ["git-refs"],
       "groupName": "git refs",
       "automerge": true
+    },
+    {
+      "description": "Automerge keystone-keycloak-backend updates",
+      "matchDatasources": ["pypi"],
+      "matchPackageNames": ["keystone-keycloak-backend"],
+      "automerge": true
     }
   ]
 }
