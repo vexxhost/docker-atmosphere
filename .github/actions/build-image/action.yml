@@ -19,6 +19,10 @@ inputs:
     description: 'Push is a shorthand for --output=type=registry'
     required: false
     default: 'false'
+  save:
+    description: 'Save the image to the Depot ephemeral registry'
+    required: false
+    default: 'false'
 
 outputs:
   imageid:
@@ -36,6 +40,9 @@ outputs:
   tags:
     description: 'Docker tags'
     value: ${{ steps.meta.outputs.tags }}
+  build-id:
+    description: 'Depot build ID (for use with depot/pull-action)'
+    value: ${{ steps.build.outputs.build-id }}
 
 runs:
   using: composite
@@ -67,6 +74,7 @@ runs:
         build-contexts: ${{ inputs.build-contexts }}
         platforms: ${{ inputs.platforms }}
         push: ${{ inputs.push }}
+        save: ${{ inputs.save }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
 
