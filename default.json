@@ -52,6 +52,12 @@
       "matchDatasources": ["pypi"],
       "matchPackageNames": ["keystone-keycloak-backend"],
       "automerge": true
+    },
+    {
+      "description": "Automerge rust Docker image updates",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["rust"],
+      "automerge": true
     }
   ]
 }
