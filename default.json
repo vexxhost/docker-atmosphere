@@ -52,6 +52,13 @@
       "matchDatasources": ["pypi"],
       "matchPackageNames": ["keystone-keycloak-backend"],
       "automerge": true
+    },
+    {
+      "description": "Automerge Ubuntu Docker image digest updates",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ubuntu"],
+      "matchUpdateTypes": ["digest"],
+      "automerge": true
     }
   ]
 }
