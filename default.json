@@ -64,9 +64,9 @@
       "automerge": true
     },
     {
-      "description": "Automerge Ubuntu Docker image digest updates",
+      "description": "Automerge base image digest updates",
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["ubuntu"],
+      "matchPackageNames": ["ubuntu", "debian", "rockylinux", "almalinux"],
       "matchUpdateTypes": ["digest"],
       "automerge": true
     }
