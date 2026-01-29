@@ -75,6 +75,12 @@
       "automerge": true
     },
     {
+      "description": "Automerge magnum-cluster-api updates",
+      "matchDatasources": ["pypi"],
+      "matchPackageNames": ["magnum-cluster-api"],
+      "automerge": true
+    },
+    {
       "description": "Automerge base image digest updates",
       "matchDatasources": ["docker"],
       "matchPackageNames": ["ubuntu", "debian", "rockylinux", "almalinux"],
