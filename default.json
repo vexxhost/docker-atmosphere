@@ -72,7 +72,7 @@
     {
       "description": "Automerge GitHub Actions updates",
       "matchDatasources": ["github-actions"],
-      "matchPackageNames": ["vexxhost/docker-atmosphere", "step-security/harden-runner"],
+      "matchPackagePatterns": ["^vexxhost/docker-atmosphere(/|$)"],
       "automerge": true
     },
     {
