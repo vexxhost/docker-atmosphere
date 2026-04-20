@@ -71,8 +71,9 @@
     },
     {
       "description": "Automerge GitHub Actions updates",
-      "matchDatasources": ["github-actions"],
-      "matchPackagePatterns": ["^vexxhost/docker-atmosphere(/|$)"],
+      "matchManagers": ["github-actions"],
+      "matchDepTypes": ["action"],
+      "matchPackageNames": ["vexxhost/docker-atmosphere"],
       "automerge": true
     },
     {
