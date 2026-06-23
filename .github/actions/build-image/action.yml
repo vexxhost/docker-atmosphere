@@ -23,6 +23,9 @@ inputs:
     description: 'Save the image to the Depot ephemeral registry'
     required: false
     default: 'false'
+  tag-version:
+    description: 'SemVer version or tag used to generate release tags instead of branch/ref tags'
+    required: false
 
 outputs:
   imageid:
@@ -55,16 +58,42 @@ runs:
         username: ${{ github.actor }}
         password: ${{ github.token }}
 
+    - name: Generate Docker tag rules
+      id: tag-rules
+      shell: bash
+      env:
+        TAG_VERSION: ${{ inputs.tag-version }}
+      run: |
+        {
+          echo "tags<<EOF"
+          if [ -n "$TAG_VERSION" ]; then
+            echo "type=semver,pattern={{version}},value=${TAG_VERSION}"
+            echo "type=semver,pattern={{major}}.{{minor}},value=${TAG_VERSION}"
+            echo "type=semver,pattern={{major}},value=${TAG_VERSION}"
+            echo "type=sha,prefix="
+          else
+            echo "type=raw,value=latest,enable={{is_default_branch}}"
+            echo "type=sha,prefix="
+            echo "type=ref,event=branch"
+            echo "type=match,pattern=stable/(.*),group=1,value={{branch}}"
+            echo "type=ref,event=pr"
+          fi
+          echo "EOF"
+          echo "flavor<<EOF"
+          if [ -n "$TAG_VERSION" ]; then
+            echo "latest=false"
+          else
+            echo "latest=auto"
+          fi
+          echo "EOF"
+        } >> "$GITHUB_OUTPUT"
+
     - uses: docker/metadata-action@80c7e94dd9b9319bd5eb7a0e0fe9291e23a2a2e9 # v6.1.0
       id: meta
       with:
         images: ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}
-        tags: |
-          type=raw,value=latest,enable={{is_default_branch}}
-          type=sha,prefix=
-          type=ref,event=branch
-          type=match,pattern=stable/(.*),group=1,value={{branch}}
-          type=ref,event=pr
+        flavor: ${{ steps.tag-rules.outputs.flavor }}
+        tags: ${{ steps.tag-rules.outputs.tags }}
 
     - uses: depot/build-push-action@9785b135c3c76c33db102e45be96a25ab55cd507 # v1.16.2
       id: build
