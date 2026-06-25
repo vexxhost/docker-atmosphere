@@ -8,10 +8,11 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Update git refs in GitHub Actions workflows",
+      "description": "Update repository/ref git refs in GitHub Actions workflows",
       "fileMatch": ["^\\.github/workflows/[^/]+\\.ya?ml$"],
       "matchStrings": [
-        "repository:\\s*(?<depName>[^\\s]+)\\s+ref:\\s*(?<currentDigest>[a-f0-9]{40})\\s*#\\s*(?<currentValue>\\S+)"
+        "(?:^|\\n)\\s*-\\s+repository:\\s*(?<depName>[^\\s]+)\\s+ref:\\s*(?<currentDigest>[a-f0-9]{40})\\s*#\\s*(?<currentValue>\\S+)",
+        "(?:^|\\n)\\s*repository:\\s*(?<depName>[^\\s]+)\\s+ref:\\s*(?<currentDigest>[a-f0-9]{40})\\s*#\\s*(?<currentValue>\\S+)"
       ],
       "datasourceTemplate": "git-refs",
       "packageNameTemplate": "https://github.com/{{depName}}"
