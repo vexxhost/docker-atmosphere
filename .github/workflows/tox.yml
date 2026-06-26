@@ -33,7 +33,12 @@ jobs:
           ref: ${{ inputs.ref }}
       - run: uv tool install bindep
       - run: sudo apt-get update
-      - run: sudo apt-get install -y $(bindep -b)
+      - run: |
+          packages="$(bindep -b test "${{ matrix.env }}" || true)"
+          if [ -n "$packages" ]; then
+            sudo apt-get install -y $packages
+          fi
+          bindep -b test "${{ matrix.env }}"
         working-directory: ${{ inputs.repository }}
       - run: uv tool install tox --with tox-uv
       - run: tox --runner virtualenv -e ${{ matrix.env }}
