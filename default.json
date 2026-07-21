@@ -46,6 +46,15 @@
         "(?<depName>[a-zA-Z0-9][a-zA-Z0-9._-]*)==(?<currentValue>[0-9][^\\s\\\\]*)"
       ],
       "datasourceTemplate": "pypi"
+    },
+    {
+      "customType": "regex",
+      "description": "Update versioned Python images from Dockerfile build arguments",
+      "fileMatch": ["(^|/)Dockerfile$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+ARG [A-Z0-9_]+_VERSION=(?<currentValue>\\S+)"
+      ],
+      "versioningTemplate": "pep440"
     }
   ],
   "packageRules": [

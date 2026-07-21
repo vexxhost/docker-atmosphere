@@ -23,15 +23,6 @@ inputs:
     description: 'Save the image to the Depot ephemeral registry'
     required: false
     default: 'false'
-  image-version:
-    description: 'Artifact version used for standardized release tags'
-    required: false
-    default: ''
-  publish-latest:
-    description: 'Publish the latest tag when using a standardized image version'
-    required: false
-    default: 'false'
-
 outputs:
   imageid:
     description: 'Image ID'
@@ -55,6 +46,67 @@ outputs:
 runs:
   using: composite
   steps:
+    - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+      id: image-metadata
+      env:
+        IMAGE_NAME: ${{ inputs.image-name }}
+      with:
+        script: |
+          const versionArgument = `${process.env.IMAGE_NAME
+            .toUpperCase()
+            .replace(/[^A-Z0-9]/g, '_')}_VERSION`;
+
+          let version = '';
+          try {
+            const response = await github.rest.repos.getContent({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path: 'Dockerfile',
+              ref: context.sha,
+            });
+            if (!Array.isArray(response.data) && response.data.content) {
+              const dockerfile = Buffer.from(
+                response.data.content,
+                response.data.encoding,
+              ).toString();
+              const match = dockerfile.match(
+                new RegExp(`^ARG ${versionArgument}=(\\S+)$`, 'm'),
+              );
+              version = match?.[1] || '';
+            }
+          } catch (error) {
+            if (error.status !== 404) {
+              throw error;
+            }
+          }
+
+          let latestStable = '';
+          if (version) {
+            const branches = await github.paginate(
+              github.rest.repos.listBranches,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                per_page: 100,
+              },
+            );
+            latestStable = branches
+              .map(({ name }) => {
+                const match = name.match(/^stable\/(\d{4})\.(\d+)$/);
+                return match
+                  ? { name, year: Number(match[1]), cycle: Number(match[2]) }
+                  : null;
+              })
+              .filter(Boolean)
+              .sort((a, b) => b.year - a.year || b.cycle - a.cycle)[0]?.name || '';
+          }
+
+          core.setOutput('version', version);
+          core.setOutput(
+            'publish-latest',
+            Boolean(latestStable && context.ref === `refs/heads/${latestStable}`),
+          );
+
     - uses: step-security/depot-setup-action@b4aca7ffc00ee3722a62991ae7a7f32f20ea225a # v1.7.1
 
     - uses: step-security/docker-login-action@164e21d7e52229904128e2f946001cb88278c33d # v4.2.0
@@ -68,12 +120,12 @@ runs:
       with:
         images: ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}
         tags: |
-          type=raw,value=latest,enable=${{ (inputs.image-version == '' && github.ref_name == github.event.repository.default_branch) || inputs.publish-latest == 'true' }}
+          type=raw,value=latest,enable=${{ (steps.image-metadata.outputs.version == '' && github.ref_name == github.event.repository.default_branch) || steps.image-metadata.outputs.publish-latest == 'true' }}
           type=sha,prefix=
           type=ref,event=branch
           type=match,pattern=stable/(.*),group=1,value={{branch}}
           type=ref,event=pr
-          type=raw,value=${{ inputs.image-version }},enable=${{ inputs.image-version != '' && github.ref_name != github.event.repository.default_branch }}
+          type=raw,value=${{ steps.image-metadata.outputs.version }},enable=${{ steps.image-metadata.outputs.version != '' && github.ref_name != github.event.repository.default_branch }}
 
     - uses: depot/build-push-action@9785b135c3c76c33db102e45be96a25ab55cd507 # v1.16.2
       id: build
