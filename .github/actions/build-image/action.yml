@@ -59,6 +59,8 @@ runs:
       id: meta
       with:
         images: ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}
+        flavor: |
+          latest=false
         tags: |
           type=raw,value=latest,enable={{is_default_branch}}
           type=sha,prefix=
