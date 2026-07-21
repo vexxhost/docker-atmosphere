@@ -54,10 +54,18 @@
       "matchStrings": [
         "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+ARG [A-Z0-9_]+_VERSION=(?<currentValue>\\S+)"
       ],
+      "depTypeTemplate": "versioned-image",
       "versioningTemplate": "pep440"
     }
   ],
   "packageRules": [
+    {
+      "description": "Keep versioned images on their current major release on stable branches",
+      "matchBaseBranches": ["/^stable/.*/"],
+      "matchDepTypes": ["versioned-image"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
     {
       "description": "Only allow digest updates for vexxhost images on stable branches",
       "matchBaseBranches": ["/^stable/.*/"],
