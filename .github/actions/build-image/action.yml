@@ -68,16 +68,12 @@ runs:
       with:
         images: ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}
         tags: |
-          type=raw,value=latest,enable=${{ inputs.image-version == '' && github.ref_name == github.event.repository.default_branch }}
-          type=sha,prefix=,enable=${{ inputs.image-version == '' }}
-          type=ref,event=branch,enable=${{ inputs.image-version == '' }}
-          type=match,pattern=stable/(.*),group=1,value={{branch}},enable=${{ inputs.image-version == '' }}
-          type=ref,event=pr,enable=${{ inputs.image-version == '' }}
+          type=raw,value=latest,enable=${{ (inputs.image-version == '' && github.ref_name == github.event.repository.default_branch) || inputs.publish-latest == 'true' }}
+          type=sha,prefix=
+          type=ref,event=branch
+          type=match,pattern=stable/(.*),group=1,value={{branch}}
+          type=ref,event=pr
           type=raw,value=${{ inputs.image-version }},enable=${{ inputs.image-version != '' && github.ref_name != github.event.repository.default_branch }}
-          type=raw,value=main,enable=${{ inputs.image-version != '' && github.ref_name == github.event.repository.default_branch }}
-          type=match,pattern=stable/(.*),group=1,value={{branch}},enable=${{ inputs.image-version != '' && startsWith(github.ref_name, 'stable/') }}
-          type=raw,value=latest,enable=${{ inputs.image-version != '' && inputs.publish-latest == 'true' }}
-          type=ref,event=pr,enable=${{ inputs.image-version != '' }}
 
     - uses: depot/build-push-action@9785b135c3c76c33db102e45be96a25ab55cd507 # v1.16.2
       id: build
