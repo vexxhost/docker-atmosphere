@@ -62,7 +62,8 @@
       "matchDatasources": ["docker"],
       "matchPackagePatterns": ["^ghcr\\.io/vexxhost/"],
       "groupName": "vexxhost images",
-      "automerge": true
+      "automerge": true,
+      "schedule": ["on sunday"]
     },
     {
       "description": "Group all git-refs updates into a single PR",
